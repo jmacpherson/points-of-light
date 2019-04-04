@@ -5,6 +5,7 @@ import android.content.Context;
 
 import ca.light.points.providers.PhotoProvider;
 import ca.light.points.providers.PhotoProviderImpl;
+import ca.light.points.providers.network.NetworkRequestRunner;
 import dagger.Module;
 import dagger.Provides;
 
@@ -24,5 +25,10 @@ public class PointsOfLightModule {
     @Provides
     PhotoProvider providePhotoProvider() {
         return PhotoProviderImpl.getInstance();
+    }
+
+    @Provides
+    NetworkRequestRunner provideNetworkRequestRunner() {
+        return NetworkRequestRunner.getInstance();
     }
 }
