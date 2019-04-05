@@ -29,12 +29,15 @@ public class PhotoProviderImpl implements PhotoProvider {
     @Override
     public ApiResponse loadPage() throws IOException {
         Gson gson = new Gson();
-        URL photosApi = new URL(ApiConstants.API_HOST + ApiConstants.ENDPOINT_PHOTOS + "&" + ApiConstants.PARAMETER_KEY + BuildConfig.API_KEY);
+        String urlString = ApiConstants.API_HOST
+                + ApiConstants.ENDPOINT_PHOTOS
+                + "&" + ApiConstants.PARAMETER_KEY + BuildConfig.API_KEY
+                ;
+        URL photosApi = new URL(urlString);
 
         HttpURLConnection connection = (HttpURLConnection) photosApi.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("accept", "application/json");
-        connection.setRequestProperty("consumer_key", BuildConfig.API_KEY);
 
         InputStreamReader isr = new InputStreamReader(connection.getInputStream());
 

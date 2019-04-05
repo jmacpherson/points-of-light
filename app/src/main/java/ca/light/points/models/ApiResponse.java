@@ -5,9 +5,8 @@ import java.util.HashMap;
 
 public class ApiResponse {
     public String feature;
-//    HashMap<String, Boolean> filters;
-    int current_page;
-    int total_pages;
-    int total_items;
-    ArrayList<Photo> photos;
+    public int current_page;
+    public int total_pages;
+    public int total_items;
+    public ArrayList<Photo> photos;
 }
