@@ -29,12 +29,13 @@ public class PhotoProviderImpl implements PhotoProvider {
     }
 
     @Override
-    public ApiResponse loadPage(Dimensions screenDimensions) throws IOException {
+    public ApiResponse loadPage(int page, Dimensions screenDimensions) throws IOException {
         Gson gson = new Gson();
         String urlString = ApiConstants.API_HOST
                 + ApiConstants.ENDPOINT_PHOTOS
                 + "&" + ApiConstants.PARAMETER_KEY + BuildConfig.API_KEY
-                + "&" + ApiConstants.IMAGE_SIZE_KEY + PhotoUtils.getImageSizeArgs(screenDimensions);
+                + "&" + ApiConstants.IMAGE_SIZE_KEY + PhotoUtils.getImageSizeArgs(screenDimensions)
+                + "&" + ApiConstants.PAGE_KEY + page;
 
         URL photosApi = new URL(urlString);
 

@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="model"
+            type="ca.light.points.viewmodels.MainViewModel"/>
+        <variable
+            name="handler"
+            type="ca.light.points.fragments.GalleryFragment.UiEventHandler"/>
+    </data>
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -23,6 +32,8 @@
             android:background="@drawable/circle_white"
             android:elevation="2dp"
             android:layout_marginBottom="10dp"
+            android:visibility="@{safeUnbox(model.showNextButton) ? View.VISIBLE : View.GONE}"
+            android:onClick="@{handler::loadNextPage}"
             android:src="@drawable/ic_expand_more_black"/>
     </FrameLayout>
 </layout>

@@ -27,13 +27,13 @@ public class Repository {
         mPhotoProvider = photoProvider;
     }
 
-    public ObservableField<ApiResponse> loadPage(final Dimensions screenDimensions) {
+    public ObservableField<ApiResponse> loadPage(final int page, final Dimensions screenDimensions) {
         final ObservableField<ApiResponse> result = new ObservableField<>();
         mNetworkRequestRunner.run(new Runnable() {
             @Override
             public void run() {
                 try {
-                    ApiResponse response = mPhotoProvider.loadPage(screenDimensions);
+                    ApiResponse response = mPhotoProvider.loadPage(page, screenDimensions);
                     result.set(response);
                 } catch (IOException ex) {
                     Log.e(TAG, "Caught IOException: " + ex.getMessage());

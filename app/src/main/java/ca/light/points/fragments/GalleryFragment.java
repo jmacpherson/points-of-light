@@ -23,6 +23,7 @@ public class GalleryFragment extends Fragment {
     private MainViewModel mViewModel;
     private RecyclerView mRecyclerView;
     private PhotoAdapter mAdapter;
+    private LinearLayoutManager mLayoutManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,13 @@ public class GalleryFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
         FragmentGalleryBinding binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_gallery, container, false);
 
+        binding.setModel(mViewModel);
+        binding.setHandler(new UiEventHandler() {
+            @Override
+            public void loadNextPage(View view) {
+                mViewModel.loadPage();
+            }
+        });
         setupUi(binding.getRoot());
 
         return binding.getRoot();
@@ -44,9 +52,30 @@ public class GalleryFragment extends Fragment {
 
     private void setupUi(View rootView) {
         mRecyclerView = rootView.findViewById(R.id.photos);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new PhotoAdapter(this, mViewModel.photos);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(newState == RecyclerView.SCROLL_STATE_IDLE
+                    || newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    if(!mViewModel.showNextButton.get()
+                            && mLayoutManager.findLastVisibleItemPosition() == mAdapter.getItemCount() - 1) {
+                        mViewModel.showPageButton();
+                    } else if(mViewModel.showNextButton.get()
+                            && mLayoutManager.findLastVisibleItemPosition() != mAdapter.getItemCount() - 1) {
+                        mViewModel.hidePageButton();
+                    }
+                }
+            }
+        });
+    }
+
+    public interface UiEventHandler {
+        void loadNextPage(View view);
     }
 
     public static FragmentBuilder builder() {
