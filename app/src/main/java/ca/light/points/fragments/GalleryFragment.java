@@ -37,9 +37,6 @@ public class GalleryFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
         FragmentGalleryBinding binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_gallery, container, false);
 
-//        if(mViewModel.photos.getValue().isEmpty()) {
-//            mViewModel.loadPage();
-//        }
         setupUi(binding.getRoot());
 
         return binding.getRoot();

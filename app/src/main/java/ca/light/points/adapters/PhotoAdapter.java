@@ -1,5 +1,6 @@
 package ca.light.points.adapters;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,19 +53,20 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
     @Override
     public void onBindViewHolder(PhotoViewHolder viewHolder, int position) {
         Photo photo = mPhotos.get(position);
-        ArrayList<Photo.PhotoUrl> urls = photo.images;
-        Dimensions imageDimensions = new Dimensions(photo.height, photo.width);
-        String size = PhotoUtils.getSizeToUse(imageDimensions),
-                url = "";
+        if(TextUtils.isEmpty(photo.preferredSize) && TextUtils.isEmpty(photo.preferredUrl)) {
+            ArrayList<Photo.PhotoUrl> urls = photo.images;
+            Dimensions imageDimensions = new Dimensions(photo.height, photo.width);
+            String size = PhotoUtils.getSizeToUse(imageDimensions);
 
 
-        for(Photo.PhotoUrl photoUrl : urls) {
-            if(Integer.parseInt(size) == photoUrl.size) {
-                url = photoUrl.url;
+            for (Photo.PhotoUrl photoUrl : urls) {
+                if (Integer.parseInt(size) == photoUrl.size) {
+                    photo.preferredUrl = photoUrl.url;
+                }
             }
         }
 
-        Picasso.get().load(url).into(viewHolder.getImageView());
+        Picasso.get().load(photo.preferredUrl).into(viewHolder.getImageView());
     }
 
     @Override

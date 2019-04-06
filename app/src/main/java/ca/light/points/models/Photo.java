@@ -19,6 +19,9 @@ public class Photo {
     public ArrayList<PhotoUrl> images;
     public User user;
 
+    public String preferredSize;
+    public String preferredUrl;
+
     public class PhotoUrl {
         public int size;
         public String url;
