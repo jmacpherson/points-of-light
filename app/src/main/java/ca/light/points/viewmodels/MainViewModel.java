@@ -19,6 +19,7 @@ public class MainViewModel extends ViewModel {
 
     public ObservableField<Boolean> showProgress = new ObservableField<>(false);
     public ObservableField<Boolean> showNextButton = new ObservableField<>(false);
+    public ObservableField<Boolean> showPhotoDescription = new ObservableField<>(true);
     public MutableLiveData<ArrayList<Photo>> photos = new MutableLiveData<>(new ArrayList<Photo>());
     public MutableLiveData<Photo> selectedPhoto = new MutableLiveData<>(new Photo());
 
@@ -63,6 +64,14 @@ public class MainViewModel extends ViewModel {
 
     public void hideProgressIndicator() {
         showProgress.set(false);
+    }
+
+    public void showPhotoDescriptionIcon() {
+        showPhotoDescription.set(true);
+    }
+
+    public void hidePhotoDescriptionIcon() {
+        showPhotoDescription.set(false);
     }
 
     public void showPageButton() {

@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <data>
+        <import type="android.text.Html"/>
+        <import type="android.text.TextUtils"/>
+        <import type="android.view.View"/>
+        <variable
+            name="model"
+            type="ca.light.points.viewmodels.MainViewModel"/>
         <variable
             name="handler"
             type="ca.light.points.fragments.LightboxFragment.UiEventHandler"/>
     </data>
-    <LinearLayout
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:background="@color/black">
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -31,6 +37,46 @@
                 android:layout_gravity="center_vertical"/>
 
         </FrameLayout>
-
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="16dp"
+            android:padding="16dp"
+            android:background="@drawable/rectangle_black_translucent"
+            android:orientation="vertical"
+            android:visibility="@{safeUnbox(model.showPhotoDescription) ? View.VISIBLE : View.GONE}">
+            <ImageView
+                android:id="@+id/lb_photo_description_hide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|top"
+                android:onClick="@{handler::hidePhotoDescription}"
+                android:src="@drawable/ic_description_hide"/>
+            <TextView
+                android:id="@+id/lb_photo_name"
+                style="@style/PhotoName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@{model.selectedPhoto.name}"
+                tools:text="Photo Name"/>
+            <TextView
+                android:id="@+id/lb_photo_description"
+                style="@style/PhotoDescription"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{TextUtils.isEmpty(model.selectedPhoto.description) ? View.GONE : View.VISIBLE}"
+                tools:text="Photo Description"/>
+        </LinearLayout>
+        <ImageView
+            android:id="@+id/lb_photo_description_show"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="32dp"
+            android:layout_marginBottom="32dp"
+            android:layout_gravity="bottom|right"
+            android:onClick="@{handler::showPhotoDescription}"
+            android:visibility="@{safeUnbox(model.showPhotoDescription) ? View.GONE : View.VISIBLE}"
+            android:src="@drawable/ic_description_show"/>
+    </FrameLayout>
 </layout>

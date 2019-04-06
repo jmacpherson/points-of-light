@@ -1,10 +1,14 @@
 package ca.light.points.fragments;
 
 import android.os.Bundle;
+import android.text.Html;
+import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -38,10 +42,21 @@ public class LightboxFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
         FragmentLightboxBinding binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_lightbox, container, false);
 
+        binding.setModel(mViewModel);
         binding.setHandler(new UiEventHandler() {
             @Override
             public void closeLightbox(View view) {
                 getActivity().onBackPressed();
+            }
+
+            @Override
+            public void showPhotoDescription(View view) {
+                mViewModel.showPhotoDescriptionIcon();
+            }
+
+            @Override
+            public void hidePhotoDescription(View view) {
+                mViewModel.hidePhotoDescriptionIcon();
             }
         });
         setupUi(binding.getRoot());
@@ -62,10 +77,22 @@ public class LightboxFragment extends Fragment {
                 Picasso.get().load(photo.preferredUrl).into((ImageView) rootView.findViewById(R.id.lb_photo));
             }
         });
+
+        TextView photoDescriptionView = rootView.findViewById(R.id.lb_photo_description);
+        String description = !TextUtils.isEmpty(mViewModel.selectedPhoto.getValue().description)
+                ? mViewModel.selectedPhoto.getValue().description
+                : "";
+
+        photoDescriptionView.setText(Html.fromHtml(description));
+        photoDescriptionView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     public interface UiEventHandler {
         void closeLightbox(View view);
+
+        void showPhotoDescription(View view);
+
+        void hidePhotoDescription(View view);
     }
 
     public static FragmentBuilder builder() {
