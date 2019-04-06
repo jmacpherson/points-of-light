@@ -47,6 +47,8 @@ public class PhotoProviderImpl implements PhotoProvider {
 
         ApiResponse response = gson.fromJson(isr, ApiResponse.class);
 
+        isr.close();
+
         return response;
     }
 }
