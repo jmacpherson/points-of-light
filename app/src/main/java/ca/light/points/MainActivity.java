@@ -11,6 +11,7 @@ import ca.light.points.providers.Repository;
 import ca.light.points.viewmodels.MainViewModel;
 
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewTreeObserver;
 
 import javax.inject.Inject;
@@ -64,9 +65,20 @@ public class MainActivity extends AppCompatActivity {
 
     public void showActionBar() {
         getSupportActionBar().show();
+
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
+        decorView.setSystemUiVisibility(uiOptions);
     }
 
     public void hideActionBar() {
         getSupportActionBar().hide();
+
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_IMMERSIVE
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LOW_PROFILE;
+        decorView.setSystemUiVisibility(uiOptions);
     }
 }
