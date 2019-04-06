@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import androidx.databinding.ObservableField;
 import ca.light.points.models.ApiResponse;
+import ca.light.points.models.Dimensions;
 import ca.light.points.providers.network.NetworkRequestRunner;
 
 public class Repository {
@@ -26,13 +27,13 @@ public class Repository {
         mPhotoProvider = photoProvider;
     }
 
-    public ObservableField<ApiResponse> loadPage() {
+    public ObservableField<ApiResponse> loadPage(final Dimensions screenDimensions) {
         final ObservableField<ApiResponse> result = new ObservableField<>();
         mNetworkRequestRunner.run(new Runnable() {
             @Override
             public void run() {
                 try {
-                    ApiResponse response = mPhotoProvider.loadPage();
+                    ApiResponse response = mPhotoProvider.loadPage(screenDimensions);
                     result.set(response);
                 } catch (IOException ex) {
                     Log.e(TAG, "Caught IOException: " + ex.getMessage());

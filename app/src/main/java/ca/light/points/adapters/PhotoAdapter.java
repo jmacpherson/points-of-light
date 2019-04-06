@@ -15,7 +15,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 import ca.light.points.R;
+import ca.light.points.models.Dimensions;
 import ca.light.points.models.Photo;
+import ca.light.points.utils.PhotoUtils;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder> {
 
@@ -49,7 +51,20 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
 
     @Override
     public void onBindViewHolder(PhotoViewHolder viewHolder, int position) {
-        Picasso.get().load(mPhotos.get(position).image_url.get(0)).into(viewHolder.getImageView());
+        Photo photo = mPhotos.get(position);
+        ArrayList<Photo.PhotoUrl> urls = photo.images;
+        Dimensions imageDimensions = new Dimensions(photo.height, photo.width);
+        String size = PhotoUtils.getSizeToUse(imageDimensions),
+                url = "";
+
+
+        for(Photo.PhotoUrl photoUrl : urls) {
+            if(Integer.parseInt(size) == photoUrl.size) {
+                url = photoUrl.url;
+            }
+        }
+
+        Picasso.get().load(url).into(viewHolder.getImageView());
     }
 
     @Override

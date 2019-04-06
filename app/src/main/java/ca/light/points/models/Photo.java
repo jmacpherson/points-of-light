@@ -16,6 +16,11 @@ public class Photo {
     public int votes_count;
     public int comments_count;
     public boolean nsfw;
-    public ArrayList<String> image_url;
+    public ArrayList<PhotoUrl> images;
     public User user;
+
+    public class PhotoUrl {
+        public int size;
+        public String url;
+    }
 }

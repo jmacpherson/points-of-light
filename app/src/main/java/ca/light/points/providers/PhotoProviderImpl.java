@@ -12,6 +12,8 @@ import java.net.URL;
 import ca.light.points.BuildConfig;
 import ca.light.points.constants.ApiConstants;
 import ca.light.points.models.ApiResponse;
+import ca.light.points.models.Dimensions;
+import ca.light.points.utils.PhotoUtils;
 
 public class PhotoProviderImpl implements PhotoProvider {
 
@@ -27,12 +29,13 @@ public class PhotoProviderImpl implements PhotoProvider {
     }
 
     @Override
-    public ApiResponse loadPage() throws IOException {
+    public ApiResponse loadPage(Dimensions screenDimensions) throws IOException {
         Gson gson = new Gson();
         String urlString = ApiConstants.API_HOST
                 + ApiConstants.ENDPOINT_PHOTOS
                 + "&" + ApiConstants.PARAMETER_KEY + BuildConfig.API_KEY
-                ;
+                + "&" + ApiConstants.IMAGE_SIZE_KEY + PhotoUtils.getImageSizeArgs(screenDimensions);
+
         URL photosApi = new URL(urlString);
 
         HttpURLConnection connection = (HttpURLConnection) photosApi.openConnection();
