@@ -6,13 +6,11 @@
             name="model"
             type="ca.light.points.viewmodels.MainViewModel"/>
     </data>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         tools:context=".MainActivity">
 
         <FrameLayout
@@ -27,5 +25,5 @@
             android:elevation="10dp"
             android:visibility="@{safeUnbox(model.showProgress) ? View.VISIBLE : View.GONE}"/>
 
-    </LinearLayout>
+    </FrameLayout>
 </layout>
