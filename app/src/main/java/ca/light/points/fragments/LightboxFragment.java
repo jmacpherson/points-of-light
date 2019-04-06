@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -23,7 +24,7 @@ import ca.light.points.databinding.FragmentLightboxBinding;
 import ca.light.points.models.Photo;
 import ca.light.points.viewmodels.MainViewModel;
 
-public class LightboxFragment extends Fragment {
+public class LightboxFragment extends DialogFragment {
 
     private static final String TAG = LightboxFragment.class.getSimpleName();
 

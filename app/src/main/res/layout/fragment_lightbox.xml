@@ -46,20 +46,26 @@
             android:background="@drawable/rectangle_black_translucent"
             android:orientation="vertical"
             android:visibility="@{safeUnbox(model.showPhotoDescription) ? View.VISIBLE : View.GONE}">
-            <ImageView
-                android:id="@+id/lb_photo_description_hide"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|top"
-                android:onClick="@{handler::hidePhotoDescription}"
-                android:src="@drawable/ic_description_hide"/>
-            <TextView
-                android:id="@+id/lb_photo_name"
-                style="@style/PhotoName"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@{model.selectedPhoto.name}"
-                tools:text="Photo Name"/>
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/lb_photo_name"
+                    style="@style/PhotoName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@{model.selectedPhoto.name}"
+                    tools:text="Photo Name"/>
+                <ImageView
+                    android:id="@+id/lb_photo_description_hide"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|top"
+                    android:onClick="@{handler::hidePhotoDescription}"
+                    android:src="@drawable/ic_description_hide"/>
+            </LinearLayout>
             <TextView
                 android:id="@+id/lb_photo_description"
                 style="@style/PhotoDescription"
