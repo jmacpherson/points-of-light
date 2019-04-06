@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
-            android:background="@drawable/circle_white"
+            android:background="@drawable/selector_page_button"
             android:elevation="2dp"
             android:layout_marginBottom="10dp"
             android:visibility="@{safeUnbox(model.showNextButton) ? View.VISIBLE : View.GONE}"
