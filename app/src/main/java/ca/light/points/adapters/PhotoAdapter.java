@@ -1,6 +1,7 @@
 package ca.light.points.adapters;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,16 +17,21 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 import ca.light.points.R;
+import ca.light.points.fragments.GalleryFragment;
 import ca.light.points.models.Dimensions;
 import ca.light.points.models.Photo;
 import ca.light.points.utils.PhotoUtils;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder> {
 
-    private ArrayList<Photo> mPhotos = new ArrayList<>();
+    private static final String TAG = PhotoAdapter.class.getSimpleName();
 
-    public PhotoAdapter(Fragment parentFragment, MutableLiveData<ArrayList<Photo>> photosLiveData) {
+    private ArrayList<Photo> mPhotos = new ArrayList<>();
+    private GalleryFragment.OnPhotoClickListener mOnClickListener;
+
+    public PhotoAdapter(Fragment parentFragment, MutableLiveData<ArrayList<Photo>> photosLiveData, GalleryFragment.OnPhotoClickListener onClickListener) {
         addPhotos(photosLiveData.getValue());
+        mOnClickListener = onClickListener;
 
         photosLiveData.observe(parentFragment, new Observer<ArrayList<Photo>>() {
             @Override
@@ -52,7 +58,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
 
     @Override
     public void onBindViewHolder(PhotoViewHolder viewHolder, int position) {
-        Photo photo = mPhotos.get(position);
+        final Photo photo = mPhotos.get(position);
         if(TextUtils.isEmpty(photo.preferredSize) && TextUtils.isEmpty(photo.preferredUrl)) {
             ArrayList<Photo.PhotoUrl> urls = photo.images;
             Dimensions imageDimensions = new Dimensions(photo.height, photo.width);
@@ -67,6 +73,13 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         }
 
         Picasso.get().load(photo.preferredUrl).into(viewHolder.getImageView());
+        viewHolder.getImageView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, "OnPhotoClickListener: " + photo.id);
+                mOnClickListener.onPhotoClick(photo);
+            }
+        });
     }
 
     @Override

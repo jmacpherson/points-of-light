@@ -57,4 +57,16 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
     }
+
+    public NavigationManager getNavigationManager() {
+        return mNavigationManager;
+    }
+
+    public void showActionBar() {
+        getSupportActionBar().show();
+    }
+
+    public void hideActionBar() {
+        getSupportActionBar().hide();
+    }
 }

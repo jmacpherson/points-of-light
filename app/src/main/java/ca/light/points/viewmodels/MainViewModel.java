@@ -1,5 +1,7 @@
 package ca.light.points.viewmodels;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 import androidx.databinding.Observable;
@@ -12,9 +14,13 @@ import ca.light.points.models.Photo;
 import ca.light.points.providers.Repository;
 
 public class MainViewModel extends ViewModel {
+
+    private static final String TAG = MainViewModel.class.getSimpleName();
+
     public ObservableField<Boolean> showProgress = new ObservableField<>(false);
     public ObservableField<Boolean> showNextButton = new ObservableField<>(false);
     public MutableLiveData<ArrayList<Photo>> photos = new MutableLiveData<>(new ArrayList<Photo>());
+    public MutableLiveData<Photo> selectedPhoto = new MutableLiveData<>(new Photo());
 
     private Repository mRepository;
 
@@ -44,6 +50,11 @@ public class MainViewModel extends ViewModel {
 
             }
         });
+    }
+
+    public void selectPhoto(Photo newSelectedPhoto) {
+        Log.i(TAG, "MainViewModel::selectPhoto: " + newSelectedPhoto.id);
+        selectedPhoto.postValue(newSelectedPhoto);
     }
 
     public void showProgressIndicator() {

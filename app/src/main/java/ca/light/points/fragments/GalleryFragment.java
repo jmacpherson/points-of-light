@@ -11,9 +11,11 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import ca.light.points.MainActivity;
 import ca.light.points.R;
 import ca.light.points.adapters.PhotoAdapter;
 import ca.light.points.databinding.FragmentGalleryBinding;
+import ca.light.points.models.Photo;
 import ca.light.points.viewmodels.MainViewModel;
 
 public class GalleryFragment extends Fragment {
@@ -50,11 +52,23 @@ public class GalleryFragment extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity) getActivity()).showActionBar();
+    }
+
     private void setupUi(View rootView) {
         mRecyclerView = rootView.findViewById(R.id.photos);
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new PhotoAdapter(this, mViewModel.photos);
+        mAdapter = new PhotoAdapter(this, mViewModel.photos, new OnPhotoClickListener() {
+            @Override
+            public void onPhotoClick(Photo selectedPhoto) {
+                mViewModel.selectPhoto(selectedPhoto);
+                ((MainActivity) getActivity()).getNavigationManager().navigateTo(LightboxFragment.builder());
+            }
+        });
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -76,6 +90,10 @@ public class GalleryFragment extends Fragment {
 
     public interface UiEventHandler {
         void loadNextPage(View view);
+    }
+
+    public interface OnPhotoClickListener {
+        void onPhotoClick(Photo selectedPhoto);
     }
 
     public static FragmentBuilder builder() {
