@@ -1,12 +1,10 @@
 package ca.light.points.viewmodels;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 
-import androidx.databinding.Observable;
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import ca.light.points.models.ApiResponse;
 import ca.light.points.models.Dimensions;
@@ -20,7 +18,8 @@ public class MainViewModel extends ViewModel {
     public ObservableField<Boolean> showProgress = new ObservableField<>(false);
     public ObservableField<Boolean> showNextButton = new ObservableField<>(false);
     public ObservableField<Boolean> showPhotoDescription = new ObservableField<>(true);
-    public MutableLiveData<ArrayList<Photo>> photos = new MutableLiveData<>(new ArrayList<Photo>());
+    public ObservableField<Integer> orientation = new ObservableField<>(-1);
+    public ObservableField<ArrayList<Photo>> photos = new ObservableField<>(new ArrayList<Photo>());
     public MutableLiveData<Photo> selectedPhoto = new MutableLiveData<>(new Photo());
 
     private Repository mRepository;
@@ -34,21 +33,27 @@ public class MainViewModel extends ViewModel {
 
     public void setDimensions(Dimensions screenDimensions) {
         mDimensions = screenDimensions;
-        loadPage();
     }
 
     public void loadPage() {
         showProgressIndicator();
         showPageButton();
-        mRepository.loadPage(page, mDimensions).addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+        final MutableLiveData<ApiResponse> liveData = mRepository.loadPage(page, mDimensions);
+        liveData.observeForever(new Observer<ApiResponse>() {
             @Override
-            public void onPropertyChanged(Observable sender, int propertyId) {
+            public void onChanged(ApiResponse response) {
                 hideProgressIndicator();
                 hidePageButton();
-                ObservableField<ApiResponse> response = (ObservableField<ApiResponse>) sender;
-                photos.postValue(response.get().photos);
-                page = response.get().current_page + 1;
 
+                // remove duplicates
+                ArrayList<Photo> photosReceived = response.photos;
+                photosReceived.removeAll(photos.get());
+                photos.get().addAll(photosReceived);
+
+                page = response.current_page + 1;
+
+                photos.notifyChange();
+                liveData.removeObserver(this);
             }
         });
     }
@@ -79,5 +84,11 @@ public class MainViewModel extends ViewModel {
 
     public void hidePageButton() {
         showNextButton.set(false);
+    }
+
+    public void setOrientation(int newOrientation) {
+        if(!orientation.get().equals(newOrientation)) {
+            orientation.set(newOrientation);
+        }
     }
 }

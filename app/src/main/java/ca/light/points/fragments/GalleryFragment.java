@@ -1,12 +1,15 @@
 package ca.light.points.fragments;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.databinding.Observable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,6 +29,8 @@ public class GalleryFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private PhotoAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
+    private Observable.OnPropertyChangedCallback mOrientationChangedCallback;
+    private Observable.OnPropertyChangedCallback mPhotosAddedCallback;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,13 +61,24 @@ public class GalleryFragment extends Fragment {
     public void onResume() {
         super.onResume();
         ((MainActivity) getActivity()).showActionBar();
+        setListeners();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        unsetListeners();
     }
 
     private void setupUi(View rootView) {
         mRecyclerView = rootView.findViewById(R.id.photos);
-        mLayoutManager = new LinearLayoutManager(getContext());
+
+        int layoutDirection = mViewModel.orientation.get() == Configuration.ORIENTATION_PORTRAIT
+                ? RecyclerView.HORIZONTAL
+                : RecyclerView.VERTICAL;
+        mLayoutManager = new LinearLayoutManager(getContext(), layoutDirection, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new PhotoAdapter(this, mViewModel.photos, new OnPhotoClickListener() {
+        mAdapter = new PhotoAdapter(mViewModel.photos.get(), new OnPhotoClickListener() {
             @Override
             public void onPhotoClick(Photo selectedPhoto) {
                 mViewModel.selectPhoto(selectedPhoto);
@@ -86,6 +102,46 @@ public class GalleryFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void setListeners() {
+        mViewModel.orientation.addOnPropertyChangedCallback(getOrientationChangedCallback());
+        mViewModel.photos.addOnPropertyChangedCallback(getPhotosAddedCallback());
+    }
+
+    private void unsetListeners() {
+        mViewModel.orientation.removeOnPropertyChangedCallback(getOrientationChangedCallback());
+        mViewModel.photos.removeOnPropertyChangedCallback(getPhotosAddedCallback());
+    }
+
+    private Observable.OnPropertyChangedCallback getOrientationChangedCallback() {
+        if(mOrientationChangedCallback == null) {
+            mOrientationChangedCallback = new Observable.OnPropertyChangedCallback() {
+                @Override
+                public void onPropertyChanged(Observable sender, int propertyId) {
+                    Log.i(TAG, "Orientation: " + mViewModel.orientation.get());
+                    if(mViewModel.photos.get().isEmpty()) {
+                        mViewModel.loadPage();
+                    }
+                }
+            };
+        }
+
+        return mOrientationChangedCallback;
+    }
+
+    private Observable.OnPropertyChangedCallback getPhotosAddedCallback() {
+        if(mPhotosAddedCallback == null) {
+            mPhotosAddedCallback = new Observable.OnPropertyChangedCallback() {
+                @Override
+                public void onPropertyChanged(Observable sender, int propertyId) {
+                    Log.i(TAG, "Photos added: " + mViewModel.photos.get().size());
+                    mAdapter.notifyInserted();
+                }
+            };
+        }
+
+        return mPhotosAddedCallback;
     }
 
     public interface UiEventHandler {

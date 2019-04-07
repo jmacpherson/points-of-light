@@ -10,13 +10,17 @@ import ca.light.points.models.Dimensions;
 import ca.light.points.providers.Repository;
 import ca.light.points.viewmodels.MainViewModel;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
 import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private MainViewModel mViewModel;
     private NavigationManager mNavigationManager;
@@ -35,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         binding.mainContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                mViewModel.setDimensions(new Dimensions(binding.mainContent.getHeight(), binding.mainContent.getWidth()));
+                updateDimensions();
                 binding.mainContent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
@@ -56,6 +60,18 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         } else {
             finish();
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Log.i(TAG, "landscape");
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            Log.i(TAG, "portrait");
         }
     }
 
@@ -80,5 +96,11 @@ public class MainActivity extends AppCompatActivity {
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LOW_PROFILE;
         decorView.setSystemUiVisibility(uiOptions);
+    }
+
+    public void updateDimensions() {
+        View mainContent = findViewById(R.id.main_content);
+        mViewModel.setDimensions(new Dimensions(mainContent.getHeight(), mainContent.getWidth()));
+        mViewModel.setOrientation(getResources().getConfiguration().orientation);
     }
 }

@@ -12,9 +12,6 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 import ca.light.points.R;
 import ca.light.points.fragments.GalleryFragment;
@@ -26,28 +23,20 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
 
     private static final String TAG = PhotoAdapter.class.getSimpleName();
 
-    private ArrayList<Photo> mPhotos = new ArrayList<>();
+    private ArrayList<Photo> mPhotos;
     private GalleryFragment.OnPhotoClickListener mOnClickListener;
+    private int insertionPoint = 0;
 
-    public PhotoAdapter(Fragment parentFragment, MutableLiveData<ArrayList<Photo>> photosLiveData, GalleryFragment.OnPhotoClickListener onClickListener) {
-        addPhotos(photosLiveData.getValue());
+    public PhotoAdapter(ArrayList<Photo> photos, GalleryFragment.OnPhotoClickListener onClickListener) {
         mOnClickListener = onClickListener;
 
-        photosLiveData.observe(parentFragment, new Observer<ArrayList<Photo>>() {
-            @Override
-            public void onChanged(ArrayList<Photo> photos) {
-                addPhotos(photos);
-            }
-        });
+        mPhotos = photos;
+        notifyInserted();
     }
 
-    private void addPhotos(ArrayList<Photo> photos) {
-        int insertionPoint = mPhotos.size();
-
-        // Get rid of duplicates
-        photos.removeAll(mPhotos);
-        mPhotos.addAll(photos);
-        notifyItemInserted(insertionPoint + 1);
+    public void notifyInserted() {
+        notifyItemInserted(insertionPoint);
+        insertionPoint = mPhotos.size();
     }
 
     @Override
@@ -68,7 +57,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
 
             ArrayList<Photo.PhotoUrl> urls = photo.images;
             for (Photo.PhotoUrl photoUrl : urls) {
-                if (Integer.parseInt(photo.preferredSize) == photoUrl.size) {
+                if (!TextUtils.isEmpty(photo.preferredSize) && Integer.parseInt(photo.preferredSize) == photoUrl.size) {
                     photo.preferredUrl = photoUrl.url;
                 }
             }
