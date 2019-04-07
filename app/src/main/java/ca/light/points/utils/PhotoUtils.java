@@ -39,6 +39,12 @@ public class PhotoUtils {
         return mSizeArgs;
     }
 
+    /**
+     * TODO: Update to track preferredSize per resolution
+     *
+     * @param imageDimensions
+     * @return
+     */
     public static String getSizeToUse(Dimensions imageDimensions) {
         HashMap<String, Dimensions> viableImageDimensionsAtSize = new HashMap<>();
         String sizeToUse = "";
@@ -117,6 +123,16 @@ public class PhotoUtils {
         if(mScreenDimensions == null) {
             mScreenDimensions = screenDimensions;
         }
+    }
+
+    public static void clearCache() {
+        mScreenDimensions = null;
+        mSizes.clear();
+        mSizeArgs = "";
+        mLongestEdgeLessThanLongestEdge = null;
+        mLongestEdgeLessThanShortestEdge = null;
+        mHeightLessThanLongestEdge = null;
+        mHeightLessThanShortestEdge = null;
     }
 
     private static String getLongestEdgeLessThanLongestEdge(Dimensions screenDimensions) {

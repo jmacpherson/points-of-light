@@ -46,6 +46,21 @@ public class Dimensions {
         return getHeight() >= otherDimensions.getHeight() && getWidth() >= otherDimensions.getWidth();
     }
 
+    @Override
+    public boolean equals(Object otherDimensionsObject) {
+        if(!(otherDimensionsObject instanceof Dimensions)) {
+            return false;
+        } else {
+            Dimensions otherDimensions = (Dimensions) otherDimensionsObject;
+            return Math.round(getHeight()) == Math.round(otherDimensions.getHeight())
+                    && Math.round(getWidth()) == Math.round(otherDimensions.getWidth());
+        }
+    }
+
+    public float calculateAspectRatio() {
+        return getHeight() / getWidth();
+    }
+
     public enum Edge {
         HEIGHT, WIDTH
     }
