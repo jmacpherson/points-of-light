@@ -10,9 +10,7 @@ import ca.light.points.models.Dimensions;
 import ca.light.points.providers.Repository;
 import ca.light.points.viewmodels.MainViewModel;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
@@ -63,18 +61,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Log.i(TAG, "landscape");
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            Log.i(TAG, "portrait");
-        }
-    }
-
     public NavigationManager getNavigationManager() {
         return mNavigationManager;
     }
@@ -101,6 +87,5 @@ public class MainActivity extends AppCompatActivity {
     public void updateDimensions() {
         View mainContent = findViewById(R.id.main_content);
         mViewModel.setDimensions(new Dimensions(mainContent.getHeight(), mainContent.getWidth()));
-        mViewModel.setOrientation(getResources().getConfiguration().orientation);
     }
 }

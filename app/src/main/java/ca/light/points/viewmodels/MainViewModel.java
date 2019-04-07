@@ -18,7 +18,6 @@ public class MainViewModel extends ViewModel {
     public ObservableField<Boolean> showProgress = new ObservableField<>(false);
     public ObservableField<Boolean> showNextButton = new ObservableField<>(false);
     public ObservableField<Boolean> showPhotoDescription = new ObservableField<>(true);
-    public ObservableField<Integer> orientation = new ObservableField<>(-1);
     public ObservableField<ArrayList<Photo>> photos = new ObservableField<>(new ArrayList<Photo>());
     public MutableLiveData<Photo> selectedPhoto = new MutableLiveData<>(new Photo());
 
@@ -33,6 +32,9 @@ public class MainViewModel extends ViewModel {
 
     public void setDimensions(Dimensions screenDimensions) {
         mDimensions = screenDimensions;
+        if(photos.get().isEmpty()) {
+           loadPage();
+        }
     }
 
     public void loadPage() {
@@ -84,11 +86,5 @@ public class MainViewModel extends ViewModel {
 
     public void hidePageButton() {
         showNextButton.set(false);
-    }
-
-    public void setOrientation(int newOrientation) {
-        if(!orientation.get().equals(newOrientation)) {
-            orientation.set(newOrientation);
-        }
     }
 }

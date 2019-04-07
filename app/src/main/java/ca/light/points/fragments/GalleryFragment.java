@@ -29,7 +29,6 @@ public class GalleryFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private PhotoAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
-    private Observable.OnPropertyChangedCallback mOrientationChangedCallback;
     private Observable.OnPropertyChangedCallback mPhotosAddedCallback;
 
     @Override
@@ -73,9 +72,10 @@ public class GalleryFragment extends Fragment {
     private void setupUi(View rootView) {
         mRecyclerView = rootView.findViewById(R.id.photos);
 
-        int layoutDirection = mViewModel.orientation.get() == Configuration.ORIENTATION_PORTRAIT
-                ? RecyclerView.HORIZONTAL
-                : RecyclerView.VERTICAL;
+        int layoutDirection = getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT
+                ? RecyclerView.VERTICAL
+                : RecyclerView.HORIZONTAL;
+
         mLayoutManager = new LinearLayoutManager(getContext(), layoutDirection, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new PhotoAdapter(mViewModel.photos.get(), new OnPhotoClickListener() {
@@ -105,29 +105,11 @@ public class GalleryFragment extends Fragment {
     }
 
     private void setListeners() {
-        mViewModel.orientation.addOnPropertyChangedCallback(getOrientationChangedCallback());
         mViewModel.photos.addOnPropertyChangedCallback(getPhotosAddedCallback());
     }
 
     private void unsetListeners() {
-        mViewModel.orientation.removeOnPropertyChangedCallback(getOrientationChangedCallback());
         mViewModel.photos.removeOnPropertyChangedCallback(getPhotosAddedCallback());
-    }
-
-    private Observable.OnPropertyChangedCallback getOrientationChangedCallback() {
-        if(mOrientationChangedCallback == null) {
-            mOrientationChangedCallback = new Observable.OnPropertyChangedCallback() {
-                @Override
-                public void onPropertyChanged(Observable sender, int propertyId) {
-                    Log.i(TAG, "Orientation: " + mViewModel.orientation.get());
-                    if(mViewModel.photos.get().isEmpty()) {
-                        mViewModel.loadPage();
-                    }
-                }
-            };
-        }
-
-        return mOrientationChangedCallback;
     }
 
     private Observable.OnPropertyChangedCallback getPhotosAddedCallback() {
