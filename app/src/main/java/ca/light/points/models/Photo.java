@@ -26,4 +26,13 @@ public class Photo {
         public int size;
         public String url;
     }
+
+    @Override
+    public boolean equals(Object otherPhoto) {
+        if(!(otherPhoto instanceof Photo)) {
+            return false;
+        } else {
+            return id == ((Photo) otherPhoto).id;
+        }
+    }
 }

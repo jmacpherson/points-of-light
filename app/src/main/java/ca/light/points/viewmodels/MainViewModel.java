@@ -54,7 +54,6 @@ public class MainViewModel extends ViewModel {
     }
 
     public void selectPhoto(Photo newSelectedPhoto) {
-        Log.i(TAG, "MainViewModel::selectPhoto: " + newSelectedPhoto.id);
         selectedPhoto.postValue(newSelectedPhoto);
     }
 

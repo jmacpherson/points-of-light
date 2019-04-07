@@ -43,6 +43,9 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
 
     private void addPhotos(ArrayList<Photo> photos) {
         int insertionPoint = mPhotos.size();
+
+        // Get rid of duplicates
+        photos.removeAll(mPhotos);
         mPhotos.addAll(photos);
         notifyItemInserted(insertionPoint + 1);
     }
@@ -57,29 +60,38 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
     }
 
     @Override
-    public void onBindViewHolder(PhotoViewHolder viewHolder, int position) {
+    public void onBindViewHolder(final PhotoViewHolder viewHolder, final int position) {
         final Photo photo = mPhotos.get(position);
+        Dimensions imageDimensions = new Dimensions(photo.height, photo.width);
         if(TextUtils.isEmpty(photo.preferredSize) && TextUtils.isEmpty(photo.preferredUrl)) {
+            photo.preferredSize = PhotoUtils.getSizeToUse(imageDimensions);
+
             ArrayList<Photo.PhotoUrl> urls = photo.images;
-            Dimensions imageDimensions = new Dimensions(photo.height, photo.width);
-            String size = PhotoUtils.getSizeToUse(imageDimensions);
-
-
             for (Photo.PhotoUrl photoUrl : urls) {
-                if (Integer.parseInt(size) == photoUrl.size) {
+                if (Integer.parseInt(photo.preferredSize) == photoUrl.size) {
                     photo.preferredUrl = photoUrl.url;
                 }
             }
         }
 
-        Picasso.get().load(photo.preferredUrl).into(viewHolder.getImageView());
+        Dimensions imageDimensionsAtScale = PhotoUtils.calculateDimensionsAtScale(imageDimensions, photo.preferredSize);
+        viewHolder.getImageView().setMinimumWidth(Math.round(imageDimensionsAtScale.getWidth()));
+        viewHolder.getImageView().setMinimumHeight(Math.round(imageDimensionsAtScale.getHeight()));
+
+        Picasso.get().load(photo.preferredUrl)
+                .into(viewHolder.getImageView());
         viewHolder.getImageView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG, "OnPhotoClickListener: " + photo.id);
+                Log.i(TAG, "OnClickListener position: " + position + " photoId " + photo.id);
                 mOnClickListener.onPhotoClick(photo);
             }
         });
+    }
+
+    @Override
+    public void onViewRecycled(final PhotoViewHolder viewHolder) {
+        viewHolder.cleanup();
     }
 
     @Override
@@ -98,6 +110,11 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
 
         ImageView getImageView() {
             return imageView;
+        }
+
+        void cleanup() {
+            Picasso.get().cancelRequest(imageView);
+            imageView.setImageDrawable(null);
         }
     }
 }

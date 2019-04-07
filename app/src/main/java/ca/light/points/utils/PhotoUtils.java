@@ -47,7 +47,7 @@ public class PhotoUtils {
         while(sizeIterator.hasNext()) {
             String size = sizeIterator.next();
 
-            Dimensions imageDimensionsAtSize = calculateDimensionsAtSize(imageDimensions, size);
+            Dimensions imageDimensionsAtSize = calculateDimensionsAtScale(imageDimensions, size);
             if(mScreenDimensions.canContain(imageDimensionsAtSize)) {
                 viableImageDimensionsAtSize.put(size, imageDimensionsAtSize);
 
@@ -62,16 +62,16 @@ public class PhotoUtils {
         return sizeToUse;
     }
 
-    private static Dimensions calculateDimensionsAtSize(Dimensions imageDimensions, String sizeCode) {
+    public static Dimensions calculateDimensionsAtScale(Dimensions imageDimensions, String sizeCode) {
         Size size = Size.findSizeByCode(sizeCode);
         Dimensions result;
 
         if(size.type == 'h' || imageDimensions.getLongestEdge() == Dimensions.Edge.HEIGHT) {
-            float newWidth = getNewDimension(imageDimensions.getWidth(), imageDimensions.getHeight(), size.dimension);
-            result = new Dimensions(size.dimension, newWidth);
+            float scaledWidth = getNewDimension(imageDimensions.getWidth(), imageDimensions.getHeight(), size.dimension);
+            result = new Dimensions(size.dimension, scaledWidth);
         } else {
-            float newHeight = getNewDimension(imageDimensions.getHeight(), imageDimensions.getWidth(), size.dimension);
-            result = new Dimensions(newHeight, size.dimension);
+            float scaledHeight = getNewDimension(imageDimensions.getHeight(), imageDimensions.getWidth(), size.dimension);
+            result = new Dimensions(scaledHeight, size.dimension);
         }
 
         return result;
