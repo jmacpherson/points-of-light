@@ -19,7 +19,7 @@ Requires environment variable **API_KEY_500PX** to be set with a valid API Key i
 
 - refactor Photo model and PhotoUtils to support preferred scale for different resolutions rather than the resolution in use the first time the image is loaded
 - animate presentation of next page button
-- trim down Photo model to only fields that are being used
+- trim down ApiResponse and Photo models to only fields that are being used
 - display comments in Lightbox view
 - style Gallery view
 - increase unit test coverage
